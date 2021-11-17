@@ -68,6 +68,13 @@
                     <span v-else></span>
                 </div>
             </div>
+            <div>
+                <strong>Full Name: </strong>
+                <input type="text" v-model="order.fullName">
+                <strong>Phone Number: </strong>
+                <input v-model="order.phone">
+                <button @click="completeCheckout()" v-bind:disabled="!this.canCheckout">Checkout</button>
+            </div>
         </div>
     </div>
 
@@ -111,6 +118,10 @@
                 cart: [],
                 filter: "price",
                 sortDirection: "ascending",
+                order: {
+                    fullName: "",
+                    phone: "",
+                }
             },
             methods: {
                 addToCart(id) {
@@ -150,6 +161,10 @@
                     if(this.cart.length === 0){
                         this.switchView();
                     }
+                },
+                
+                completeCheckout(){
+                    alert("Checkout Complete");
                 },
                 
                 getNestedListOfIds() {
@@ -196,7 +211,14 @@
                         });
                     }
                     return result;
-                }
+                },
+                canCheckout(){
+                    if (/^[a-zA-Z]+$/.test(this.order.fullName) && /^\d+$/.test(this.order.phone)){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
             }
 
         });
