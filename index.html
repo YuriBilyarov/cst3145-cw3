@@ -27,7 +27,6 @@
         <br>
         <div id="shopping" v-if="showLessons">
                 <input type="text" v-model="searchInput" @keyup="searchResultArray" placeholder="Search lessons">
-                <button v-on:click="searchResultArray()">Search</button>
             <div class="sortedBy">sorted by
                 <select class="sortingFont" v-model="filter">
                     <option value="subject">Subject</option>
@@ -44,11 +43,10 @@
             <br><br>
             <div v-for="lesson in sortedLessons">
                 <img v-bind:src="lesson.image" height="150">
-                <h2>{{lesson.subject}}</h1>
+                <h2>{{lesson.subject}} <span v-bind:class="getFontAwesomeIcon(lesson)"></span></h1>
                     <p>Location: {{lesson.location}}</p>
-                    <p>Price: {{lesson.price}}</p>
-                    <p>Spaces: {{lesson.availableInventory - getItemCount(lesson.id)}}</p>
-                    <!-- <p>{{getNestedList}}</p> -->
+                    <p>Price: £{{lesson.price}}</p>
+                    <p>Spaces: {{lesson.availableInventory}}</p>
                     <button @click="addToCart(lesson.id)" v-bind:disabled="!canAddToCart(lesson)">Add to
                         cart</button>
                     <br><br>
@@ -59,18 +57,16 @@
             <div v-for="item in getNestedList">
                 <div v-for="lesson in sortedLessons">
                     <span v-if="item.id === lesson.id && item.amountInCart >= 1">
-                        <!-- <img v-bind:src="lesson.image" height="150"> -->
+                        <img v-bind:src="lesson.image" height="150">
                         <h2>{{lesson.subject}}</h1>
                             <p>Location: {{lesson.location}}</p>
                             <p>Price: {{lesson.price}}</p>
                             <p>Quantity: {{item.amountInCart}}</p>
                             <button @click="removeFromCart(lesson.id)">Remove from cart</button>
-                            <p>------</p>
                     </span>
-                    <span v-else></span>
                 </div>
             </div>
-            <div>
+            <div id="checkoutForm">
                 <strong>Full Name: </strong>
                 <input type="text" v-model="order.fullName">
                 <strong>Phone Number: </strong>
@@ -82,35 +78,38 @@
 
     <script>
 
-        const sorters = {
-            subject_ascending: (a, b) => {
-                let x = a.subject.toUpperCase(),
-                    y = b.subject.toUpperCase();
-                return x == y ? 0 : x > y ? 1 : -1;
-            },
-            subject_descending: (a, b) => {
-                let x = a.subject.toUpperCase(),
-                    y = b.subject.toUpperCase();
-                return x == y ? 0 : x > y ? -1 : 1;
-            },
+        // const sorters = {
+        //     subject_ascending: (a, b) => {
+        //         let x = a.subject.toUpperCase(),
+        //             y = b.subject.toUpperCase();
+        //         return x == y ? 0 : x > y ? 1 : -1;
+        //     },
+        //     subject_descending: (a, b) => {
+        //         let x = a.subject.toUpperCase(),
+        //             y = b.subject.toUpperCase();
+        //         return x == y ? 0 : x > y ? -1 : 1;
+        //     },
 
-            location_ascending: (a, b) => {
-                let x = a.location.toUpperCase(),
-                    y = b.location.toUpperCase();
-                return x == y ? 0 : x > y ? 1 : -1;
-            },
-            location_descending: (a, b) => {
-                let x = a.location.toUpperCase(),
-                    y = b.location.toUpperCase();
-                return x == y ? 0 : x > y ? -1 : 1;
-            },
+        //     location_ascending: (a, b) => {
+        //         let x = a.location.toUpperCase(),
+        //             y = b.location.toUpperCase();
+        //         return x == y ? 0 : x > y ? 1 : -1;
+        //     },
+        //     location_descending: (a, b) => {
+        //         let x = a.location.toUpperCase(),
+        //             y = b.location.toUpperCase();
+        //         return x == y ? 0 : x > y ? -1 : 1;
+        //     },
 
-            price_ascending: (a, b) => a.price - b.price,
-            price_descending: (a, b) => b.price - a.price,
+        //     price_ascending: (a, b) => a.price - b.price,
+        //     price_descending: (a, b) => b.price - a.price,
 
-            space_ascending: (a, b) => a.space - b.space,
-            space_descending: (a, b) => b.space - a.space,
-        };
+        //     space_ascending: (a, b) => {(a.availableInventory.number - this.getItemCount(a.id).number) - (b.availableInventory.number - this.getItemCount(b.id).number)},
+        //     space_descending: (a, b) => {(b.availableInventory.number - this.getItemCount(b.id).number) - (a.availableInventory.number - this.getItemCount(a.id).number)},
+
+        //     // space_ascending: (a, b) => a.space - b.space,
+        //     // space_descending: (a, b) => b.space - a.space,
+        // };
         let app = new Vue({
 
             el: '#app',
@@ -125,17 +124,49 @@
                     phone: "",
                     total: "",
                 },
-                searchInput: ""
+                searchInput: "",
+
+                sorters: {
+                    subject_ascending: (a, b) => {
+                        let x = a.subject.toUpperCase(),
+                            y = b.subject.toUpperCase();
+                        return x == y ? 0 : x > y ? 1 : -1;
+                    },
+                    subject_descending: (a, b) => {
+                        let x = a.subject.toUpperCase(),
+                            y = b.subject.toUpperCase();
+                        return x == y ? 0 : x > y ? -1 : 1;
+                    },
+
+                    location_ascending: (a, b) => {
+                        let x = a.location.toUpperCase(),
+                            y = b.location.toUpperCase();
+                        return x == y ? 0 : x > y ? 1 : -1;
+                    },
+                    location_descending: (a, b) => {
+                        let x = a.location.toUpperCase(),
+                            y = b.location.toUpperCase();
+                        return x == y ? 0 : x > y ? -1 : 1;
+                    },
+
+                    price_ascending: (a, b) => a.price - b.price,
+                    price_descending: (a, b) => b.price - a.price,
+
+                    space_ascending: (a, b) => a.availableInventory - b.availableInventory,
+                    space_descending: (a, b) => b.availableInventory - a.availableInventory,
+                }
             },
             methods: {
                 addToCart(id) {
                     this.cart.push(id);
+                    let index = this.lessons.findIndex((obj => obj.id == id));
+                    this.lessons[index].availableInventory = this.lessons[index].availableInventory - 1;
                 },
                 canAddToCart(lesson) {
-                    let id = lesson.id;
-                    let itemCount = this.getItemCount(id);
+                    // let id = lesson.id;
+                    // let itemCount = this.getItemCount(id);
                     let spaces = lesson.availableInventory;
-                    return spaces > itemCount;
+                    return spaces > 0;
                 },
                 getItemCount(id) {
                     let counter = 0;
@@ -155,9 +186,11 @@
                     return this.lessons.sort(compare);
                 },
                 removeFromCart(id){
-                    const index = this.cart.indexOf(id);
-                    if (index > -1) {
-                        this.cart.splice(index, 1);
+                    const cartIndex = this.cart.indexOf(id);
+                    const lessonsIndex = this.lessons.findIndex((obj => obj.id == id));
+                    if (cartIndex > -1) {
+                        this.cart.splice(cartIndex, 1);
+                        this.lessons[lessonsIndex].availableInventory = this.lessons[lessonsIndex].availableInventory + 1;
                     }
                     if(this.cart.length === 0){
                         this.switchView();
@@ -172,13 +205,16 @@
                 searchResultArray(){
                     return this.lessons.filter(el => el.subject.toUpperCase().includes(this.searchInput.toUpperCase()) || el.location.toUpperCase().includes(this.searchInput.toUpperCase()));
                 },
+                getFontAwesomeIcon(lesson){
+                    return lesson.fontAwesomeIcon;
+                }
             },
             computed: {
                 cartItemCount() {
                     return this.cart.length;
                 },
                 sortedLessons() {
-                    return this.searchResultArray().slice().sort(sorters[this.filter + "_" + this.sortDirection]);
+                    return this.searchResultArray().slice().sort(this.sorters[this.filter + "_" + this.sortDirection]);
                 },
                 getAllItemIds() {
                     let ids = [];
