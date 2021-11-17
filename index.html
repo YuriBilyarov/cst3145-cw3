@@ -27,7 +27,7 @@
         <br>
         <div id="shopping" v-if="showLessons">
                 <input type="text" v-model="searchInput" @keyup="searchResultArray" placeholder="Search lessons">
-                <button v-on:click="searchResultArray">Search</button>
+                <button v-on:click="searchResultArray()">Search</button>
             <div class="sortedBy">sorted by
                 <select class="sortingFont" v-model="filter">
                     <option value="subject">Subject</option>
@@ -169,16 +169,16 @@
                 completeCheckout(){
                     alert("Checkout Complete");
                 }, 
+                searchResultArray(){
+                    return this.lessons.filter(el => el.subject.toUpperCase().includes(this.searchInput.toUpperCase()) || el.location.toUpperCase().includes(this.searchInput.toUpperCase()));
+                },
             },
             computed: {
                 cartItemCount() {
                     return this.cart.length;
                 },
-                searchResultArray(){
-                    return this.lessons.filter(el => el.subject.includes(this.searchInput) || el.location.includes(this.searchInput));
-                },
                 sortedLessons() {
-                    return this.searchResultArray.slice().sort(sorters[this.filter + "_" + this.sortDirection]);
+                    return this.searchResultArray().slice().sort(sorters[this.filter + "_" + this.sortDirection]);
                 },
                 getAllItemIds() {
                     let ids = [];
