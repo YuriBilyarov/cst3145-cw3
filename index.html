@@ -26,6 +26,8 @@
         </header>
         <br>
         <div id="shopping" v-if="showLessons">
+                <input type="text" v-model="searchInput" @keyup="searchResultArray" placeholder="Search lessons">
+                <button v-on:click="searchResultArray">Search</button>
             <div class="sortedBy">sorted by
                 <select class="sortingFont" v-model="filter">
                     <option value="subject">Subject</option>
@@ -121,7 +123,9 @@
                 order: {
                     fullName: "",
                     phone: "",
-                }
+                    total: "",
+                },
+                searchInput: ""
             },
             methods: {
                 addToCart(id) {
@@ -141,10 +145,7 @@
                         }
                     }
                     return counter;
-                },
-                switchView() {
-                    this.showLessons = this.showLessons ? false : true;
-                },
+                },  
                 sortBy(attribute) {
                     function compare(a, b) {
                         if (a.subject > b.subject) return 1;
@@ -161,32 +162,23 @@
                     if(this.cart.length === 0){
                         this.switchView();
                     }
+                },   
+                switchView() {
+                    this.showLessons = this.showLessons ? false : true;
                 },
-                
                 completeCheckout(){
                     alert("Checkout Complete");
-                },
-                
-                getNestedListOfIds() {
-                    let nestedList = [];
-                    for (i = 0; i < this.cart.length; i++) {
-                        for (j = 0; j < nestedList.length; j++) {
-                            if (this.cart[i] === nestedList[j][0]) {
-                                nestedList[j].push(this.cart[i]);
-                            } else {
-                                nestedList.push.apply([this.cart[i]])
-                            }
-                        }
-                    }
-                    return nestedList;
-                },
+                }, 
             },
             computed: {
                 cartItemCount() {
                     return this.cart.length;
                 },
+                searchResultArray(){
+                    return this.lessons.filter(el => el.subject.includes(this.searchInput) || el.location.includes(this.searchInput));
+                },
                 sortedLessons() {
-                    return this.lessons.slice().sort(sorters[this.filter + "_" + this.sortDirection]);
+                    return this.searchResultArray.slice().sort(sorters[this.filter + "_" + this.sortDirection]);
                 },
                 getAllItemIds() {
                     let ids = [];
