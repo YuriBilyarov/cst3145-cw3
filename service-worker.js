@@ -1,4 +1,4 @@
-var cacheName = 'schoolcache';
+let cacheName = 'schoolcache';
 
 self.addEventListener('fetch', (e) => {
     e.respondWith(caches.match(e.request).then(function (r) {
