@@ -1,4 +1,20 @@
 let cacheName = 'schoolcache';
+let cacheFiles = [
+    'index.html',
+    'books192.png',
+    'books512.png',
+    'app.webmanifest',
+    'servide-worker.js',
+];
+
+self.addEventListener('install', (e) => {
+    console.log('[Service Worker] Install');
+    e.waitUntil(caches.open(cacheName).then((cache) => {
+        console.log('[Service Worker] Caching all the files');
+        return cache.addAll(cacheFiles);
+    })
+    );
+});
 
 self.addEventListener('fetch', (e) => {
     e.respondWith(caches.match(e.request).then(function (r) {
