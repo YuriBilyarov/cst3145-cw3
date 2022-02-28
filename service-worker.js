@@ -7,6 +7,7 @@ let cacheFiles = [
     'service-worker.js',
 ];
 
+// install listener that caches specified files
 self.addEventListener('install', (e) => {
     console.log('[Service Worker] Install');
     e.waitUntil(caches.open(cacheName).then((cache) => {
@@ -16,7 +17,7 @@ self.addEventListener('install', (e) => {
     );
 });
 
-
+// fetch listener to cache any missing files and use them when available
 self.addEventListener('fetch', (e) => {
     e.respondWith(caches.match(e.request).then(function (r) {
         console.log('[Service Worker] Download the file if it is not in the cache');
