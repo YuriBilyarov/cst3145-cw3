@@ -1,4 +1,7 @@
+// cache storage name
 let cacheName = 'schoolcache';
+
+// files to cache in install listener
 let cacheFiles = [
     'index.html',
     'books192.png',
