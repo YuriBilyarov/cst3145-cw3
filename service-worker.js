@@ -4,7 +4,7 @@ let cacheFiles = [
     'books192.png',
     'books512.png',
     'app.webmanifest',
-    'servide-worker.js',
+    'service-worker.js',
 ];
 
 self.addEventListener('install', (e) => {
