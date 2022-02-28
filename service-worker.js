@@ -16,6 +16,7 @@ self.addEventListener('install', (e) => {
     );
 });
 
+
 self.addEventListener('fetch', (e) => {
     e.respondWith(caches.match(e.request).then(function (r) {
         console.log('[Service Worker] Download the file if it is not in the cache');

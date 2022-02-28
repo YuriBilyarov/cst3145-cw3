@@ -8,16 +8,16 @@
 
 <head>
     <title>After School Club</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <!-- Registers service worker for caching all the needed files -->
+    <!-- Registers service worker for caching all the needed files and using the app offline -->
     <script>
-        if('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js');
         };
     </script>
-    
-    <!-- Specifies a webmanifest file setting up the PWA  -->
+
+    <!-- Specifies a webmanifest file containing information about the PWA  -->
     <link rel="manifest" href="app.webmanifest">
 </head>
 
@@ -139,37 +139,37 @@
                 },
                 populateResultArray() {
                     fetch(this.fetchString()).then(
-                    function (response) {
-                        response.json().then(
-                            function (lessons) {
-                                app.lessons = lessons;
-                            });
-                    })
+                        function (response) {
+                            response.json().then(
+                                function (lessons) {
+                                    app.lessons = lessons;
+                                });
+                        })
                 },
-                createNewOrder(orderObject){
+                createNewOrder(orderObject) {
                     fetch('https://cst3145-booking-system.herokuapp.com/collection/order'
                         , {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify(orderObject), 
+                            body: JSON.stringify(orderObject),
                         })
                         .then(response => response.json())
                         .then(responseJSON => {
                             console.log('Success:', responseJSON);
                         });
                 },
-                createLessonOrder(id, amountInCart){
+                createLessonOrder(id, amountInCart) {
                     let newOrder = {
                         name: app.order.name,
                         phone_number: app.order.phoneNumber,
                         lesson_id: id,
                         space: amountInCart
                     };
-                    this.createNewOrder(newOrder);  
+                    this.createNewOrder(newOrder);
                 },
-                updateLessonSpaces(id, newSpaceAmount){
+                updateLessonSpaces(id, newSpaceAmount) {
                     fetch('https://cst3145-booking-system.herokuapp.com/collection/lesson/' + id
                         , {
                             method: 'PUT',
@@ -185,15 +185,15 @@
                             console.log('Success:', responseJSON);
                         });
                 },
-                updateSpecificLessonSpaces(id){
+                updateSpecificLessonSpaces(id) {
                     let index = this.lessons.findIndex((obj => obj.id == id));
                     this.updateLessonSpaces(id, this.lessons[index].available_space)
                 },
-                orderAndUpdate(){
-                    for(i = 0; i < this.listOfCartQuantitiesForIds.length; i++){
+                orderAndUpdate() {
+                    for (i = 0; i < this.listOfCartQuantitiesForIds.length; i++) {
                         let id = this.listOfCartQuantitiesForIds[i].id;
                         let amountInCart = this.listOfCartQuantitiesForIds[i].amountInCart;
-                        if(amountInCart > 0){
+                        if (amountInCart > 0) {
                             this.createLessonOrder(id, amountInCart);
                             this.updateSpecificLessonSpaces(id);
                         }
@@ -204,11 +204,11 @@
                 getFontAwesomeIcon(lesson) {
                     return lesson.font_awesome_icon;
                 },
-                getImage(imageName){
+                getImage(imageName) {
                     return "https://cst3145-booking-system.herokuapp.com/" + imageName;
                 },
                 fetchString() {
-                    if(this.searchInput == ""){
+                    if (this.searchInput == "") {
                         return 'https://cst3145-booking-system.herokuapp.com/collection/lesson/' + this.filter + '/' + this.sortDirection;
                     } else {
                         return 'https://cst3145-booking-system.herokuapp.com/collection/lesson/' + this.searchInput + '/' + this.filter + '/' + this.sortDirection;
@@ -251,7 +251,7 @@
                     }
                 },
             },
-            created: function(){
+            created: function () {
                 this.populateResultArray();
             }
         });
