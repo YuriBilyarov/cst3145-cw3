@@ -1,25 +1,6 @@
 // cache storage name
 let cacheName = 'schoolcache';
 
-// files to cache in install listener
-let cacheFiles = [
-    'index.html',
-    'books192.png',
-    'books512.png',
-    'app.webmanifest',
-    'service-worker.js',
-];
-
-// install listener that caches specified files
-self.addEventListener('install', (e) => {
-    console.log('[Service Worker] Install');
-    e.waitUntil(caches.open(cacheName).then((cache) => {
-        console.log('[Service Worker] Caching all the files');
-        return cache.addAll(cacheFiles);
-    })
-    );
-});
-
 // fetch listener to cache any missing files and use them when available
 self.addEventListener('fetch', (e) => {
     e.respondWith(caches.match(e.request).then(function (r) {
